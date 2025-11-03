@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>File Crow</title>
+    <link href="/web/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <main>
+      <h1>File Crow</h1>
+      <section>
+        <h2>Upload Files</h2>
+        <form method="post" enctype="multipart/formdata">
+          <label>
+            <span>Select files to upload</span>
+            <input type="file" name="file" multiple />
+          </label>
+          <button type="submit">Upload</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>Download Files</h2>
+        {{if gt (len .Files) 0}}
+        <ul>
+          {{range .Files}}
+          <li>
+            <p>{{.Name}} {{.Size}}</p>
+            <a href="/files/{{.Name}}" download>download</a>
+            <form method="post">
+              <button type="submit">delete</button>
+            </form>
+          </li>
+          {{end}}
+        </ul>
+        {{else}}
+        <p>There are no files available for download</p>
+        {{end}}
+      </section>
+    </main>
+  </body>
+</html>
