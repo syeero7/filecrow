@@ -28,7 +28,7 @@
           <li>
             <p>{{.Name}} {{.Size}}</p>
             <a href="/files/{{.Temp}}" download="{{.Name}}">download</a>
-            <form method="post">
+            <form method="post" action="/delete/{{.Temp}}">
               <button type="submit">delete</button>
             </form>
           </li>
