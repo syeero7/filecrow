@@ -8,6 +8,7 @@ import (
 
 type FSData struct {
 	Files []File
+	Usage *DiskUsage
 }
 
 func fileHandler(fsvr *fileServer, w http.ResponseWriter, r *http.Request) {
@@ -29,7 +30,7 @@ func fileHandler(fsvr *fileServer, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := FSData{Files: fsvr.Files}
+	data := FSData{Files: fsvr.Files, Usage: getDiskUsage()}
 	if err := t.Execute(w, data); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
