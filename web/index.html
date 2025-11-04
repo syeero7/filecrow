@@ -23,12 +23,25 @@
       <section>
         <h2>Download Files</h2>
         {{if gt (len .Files) 0}}
+        <div>
+          <form
+            method="post"
+            action="/delete"
+            onsubmit="return confirm('Are you sure you want to delete all {{len .Files}} files?')"
+          >
+            <button type="submit">delete all files</button>
+          </form>
+        </div>
         <ul>
           {{range .Files}}
           <li>
             <p>{{.Name}} {{.Size}}</p>
             <a href="/files/{{.Temp}}" download="{{.Name}}">download</a>
-            <form method="post" action="/delete/{{.Temp}}">
+            <form
+              method="post"
+              action="/delete/{{.Temp}}"
+              onsubmit="return confirm('Are you sure you want to delete {{.Name}}?')"
+            >
               <button type="submit">delete</button>
             </form>
           </li>

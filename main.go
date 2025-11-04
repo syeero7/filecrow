@@ -23,8 +23,9 @@ func main() {
 	}
 
 	mux.Handle("GET /web/", http.FileServer(http.FS(frontend)))
-	mux.HandleFunc("POST /upload", fsvr.middleware(uploadHandler))
 	mux.HandleFunc("GET /files/{file}", fsvr.middleware(downloadHandler))
+	mux.HandleFunc("POST /upload", fsvr.middleware(uploadHandler))
+	mux.HandleFunc("POST /delete", fsvr.middleware(deleteAllHandler))
 	mux.HandleFunc("POST /delete/{file}", fsvr.middleware(deleteFileHandler))
 	mux.HandleFunc("GET /", fsvr.middleware(fileHandler))
 
