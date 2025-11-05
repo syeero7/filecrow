@@ -24,18 +24,6 @@ button {
   cursor: pointer;
 }
 
-button,
-.files li > a {
-  border: 1px solid transparent;
-  transition: border-color 0.25s ease-in-out;
-
-  &:hover,
-  &:focus-visible {
-    border-color: var(--glow-color);
-    filter: drop-shadow(0 0 0.25em var(--glow-color));
-  }
-}
-
 body {
   background-color: var(--background);
   color: var(--text);
@@ -89,8 +77,16 @@ h2 {
       max-width: 200px;
       width: 100%;
       margin-inline: auto;
+      border: 1px solid transparent;
+      transition: border-color 0.25s ease-in-out;
 
       --glow-color: hsl(from var(--secondary) h s 45%);
+
+      &:hover,
+      &:focus-visible {
+        border-color: var(--glow-color);
+        filter: drop-shadow(0 0 0.25em var(--glow-color));
+      }
     }
   }
 }
@@ -133,16 +129,62 @@ h2 {
 }
 
 .download {
-  ul {
-    list-style: none;
+  margin-top: 1em;
+  --icon-size: 32px;
+
+  a,
+  button {
+    display: block;
+    background-color: transparent;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    border: none;
+  }
+
+  a > img,
+  button > img {
+    width: var(--icon-size);
+    height: var(--icon-size);
   }
 }
 
 .delete-all {
+  padding-inline: 0.75em;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .files {
+  list-style: none;
+  padding: 1em 0.5em;
+
+  li {
+    padding: 0.5em;
+    background-color: var(--primary);
+    border-radius: var(--radius);
+    display: grid;
+    margin-bottom: 0.5em;
+    gap: 0.25em;
+
+    p {
+      display: flex;
+      justify-content: space-between;
+      gap: 1em;
+
+      span:nth-child(2) {
+        white-space: nowrap;
+        font-size: 0.9em;
+      }
+    }
+
+    div {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1em;
+    }
+  }
 }
 
 .empty {
+  text-align: center;
 }

@@ -24,7 +24,7 @@
           </div>
           <p>
             <span>{{.Usage.Free}} free of {{.Usage.Total}} </span>
-            <span>{{.Usage.Percentage}} used</span>
+            <span> &#40;{{.Usage.Percentage}} used&#41;</span>
           </p>
         </article>
       </section>
@@ -38,21 +38,36 @@
             action="/delete"
             onsubmit="return confirm('Are you sure you want to delete all {{len .Files}} files?')"
           >
-            <button type="submit">delete all files</button>
+            <button type="submit" title="delete all files">
+              <img src="/web/folder-remove.webp" alt="delete all files" />
+            </button>
           </form>
         </div>
         <ul class="files">
           {{range .Files}}
           <li>
-            <p>{{.Name}} {{.Size}}</p>
-            <a href="/files/{{.Temp}}" download="{{.Name}}">download</a>
-            <form
-              method="post"
-              action="/delete/{{.Temp}}"
-              onsubmit="return confirm('Are you sure you want to delete {{.Name}}?')"
-            >
-              <button type="submit">delete</button>
-            </form>
+            <p>
+              <span>{{.Name}}</span>
+              <span>{{.Size}}</span>
+            </p>
+            <div>
+              <a
+                href="/files/{{.Temp}}"
+                download="{{.Name}}"
+                title="download file"
+              >
+                <img src="/web/download-file.webp" alt="download file" />
+              </a>
+              <form
+                method="post"
+                action="/delete/{{.Temp}}"
+                onsubmit="return confirm('Are you sure you want to delete {{.Name}}?')"
+              >
+                <button type="submit" title="delete file">
+                  <img src="/web/file-delete.webp" alt="delete file" />
+                </button>
+              </form>
+            </div>
           </li>
           {{end}}
         </ul>
