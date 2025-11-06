@@ -12,10 +12,14 @@
       <section class="upload">
         <h2>Upload Files</h2>
         <form method="post" enctype="multipart/form-data" action="/upload">
-          <label>
-            <span>Select files to upload</span>
-            <input type="file" name="file" multiple />
-          </label>
+          <div>
+            <input
+              type="file"
+              name="file"
+              multiple
+              aira-label="select files to upload"
+            />
+          </div>
           <button type="submit">Upload</button>
         </form>
         <article class="disk-usage">
