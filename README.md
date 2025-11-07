@@ -15,7 +15,7 @@ I often transfer files between my PC and mobile device using a USB cable. But ev
 1. Install file crow
 
 ```bash
-go Install github.com/syeero7/file-crow
+go install github.com/syeero7/file-crow
 ```
 
 2. Start the file server
