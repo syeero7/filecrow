@@ -39,7 +39,11 @@ func main() {
 	mux.HandleFunc("POST /delete/{file}", fsvr.middleware(deleteFileHandler))
 	mux.HandleFunc("GET /", fsvr.middleware(fileHandler))
 
-	server := &http.Server{Addr: fmt.Sprintf(":%d", *port), Handler: mux}
+	server := &http.Server{
+		Addr:              fmt.Sprintf(":%d", *port),
+		Handler:           mux,
+		ReadHeaderTimeout: time.Second * 5,
+	}
 	serverErr := make(chan error, 1)
 
 	go func() {
