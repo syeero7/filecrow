@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -34,9 +35,18 @@ func getDiskUsage() *DiskUsage {
 	}
 
 	return &DiskUsage{
-		Free:       humanReadSize(int64(usage.Free)),
-		Used:       humanReadSize(int64(usage.Used)),
-		Total:      humanReadSize(int64(usage.Total)),
+		Free:       humanReadSize(safeUint64ToInt64(usage.Free)),
+		Used:       humanReadSize(safeUint64ToInt64(usage.Used)),
+		Total:      humanReadSize(safeUint64ToInt64(usage.Total)),
 		Percentage: fmt.Sprintf("%.2f%%", usage.UsedPercent),
 	}
+}
+
+func safeUint64ToInt64(v uint64) int64 {
+	if v > math.MaxInt64 {
+		log.Println("uint64 value exceeds math.MaxInt64")
+		return 0
+	}
+
+	return int64(v)
 }

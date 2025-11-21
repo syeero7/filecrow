@@ -30,13 +30,13 @@ func (f *fileServer) makeFSDir() error {
 		return err
 	}
 
-	perm := 0o755
+	var perm os.FileMode = 0o755
 	if runtime.GOOS == "windows" {
 		perm = 0o777
 	}
 
 	fsdir := path.Join(dir, "filecrow/files")
-	if err := os.MkdirAll(fsdir, os.FileMode(perm)); err != nil {
+	if err := os.MkdirAll(fsdir, perm); err != nil {
 		return err
 	}
 	f.directory = fsdir
