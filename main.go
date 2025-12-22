@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-//go:embed web
+//go:embed dist
 var frontend embed.FS
 
 func main() {
@@ -27,22 +27,12 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	fsvr := fileServer{}
-	if err := fsvr.makeFSDir(); err != nil {
-		log.Fatal(err)
-	}
 
+	mux.HandleFunc("/ws", websocketHandler)
 	mux.HandleFunc("POST /register", registerHandler)
 	mux.HandleFunc("POST /stream", streamHandler)
 	mux.HandleFunc("GET /download", downloadHandler)
-
-	mux.Handle("GET /web/", http.FileServer(http.FS(frontend)))
-	//	mux.HandleFunc("GET /files/{file}", fsvr.middleware(downloadHandler))
-	// mux.HandleFunc("POST /upload", fsvr.middleware(uploadHandler))
-	// mux.HandleFunc("POST /delete", fsvr.middleware(deleteAllHandler))
-	// mux.HandleFunc("POST /delete/{file}", fsvr.middleware(deleteFileHandler))
-	// mux.HandleFunc("GET /", fsvr.middleware(fileHandler))
-	// mux.Handle("/", http.FileServer(http.Dir("./public")))
+	mux.Handle("GET /", http.FileServer(http.FS(frontend)))
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%d", *port),

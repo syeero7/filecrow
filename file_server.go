@@ -2,79 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"path"
-	"path/filepath"
-	"runtime"
-	"strings"
 )
-
-type File struct{ Temp, Name, Size string }
-
-type fileServer struct {
-	Files     []File
-	directory string
-}
-
-func (f *fileServer) middleware(fn func(*fileServer, http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		fn(f, w, r)
-	}
-}
-
-func (f *fileServer) makeFSDir() error {
-	dir, err := os.UserHomeDir()
-	if err != nil {
-		return err
-	}
-
-	var perm os.FileMode = 0o755
-	if runtime.GOOS == "windows" {
-		perm = 0o777
-	}
-
-	fsdir := path.Join(dir, "filecrow/files")
-	if err := os.MkdirAll(fsdir, perm); err != nil {
-		return err
-	}
-	f.directory = fsdir
-	return nil
-}
-
-func (f *fileServer) readFSDir() error {
-	if len(f.Files) > 0 {
-		f.Files = []File{}
-	}
-
-	entries, err := os.ReadDir(f.directory)
-	if err != nil {
-		log.Println(f.directory)
-
-		return err
-	}
-
-	for _, entry := range entries {
-		if entry.IsDir() {
-			continue
-		}
-
-		info, err := entry.Info()
-		if err != nil {
-			return err
-		}
-
-		file := File{
-			Temp: info.Name(),
-			Name: tmpToNormal(info.Name()),
-			Size: humanReadSize(info.Size()),
-		}
-		f.Files = append(f.Files, file)
-	}
-
-	return nil
-}
 
 func humanReadSize(s int64) string {
 	const unit = 1000
@@ -89,15 +17,4 @@ func humanReadSize(s int64) string {
 	}
 
 	return fmt.Sprintf("%.2f %cB", float64(s)/float64(div), "kMGTPE"[exp])
-}
-
-func tmpToNormal(name string) string {
-	parts := strings.Split(name, "_tmp-")
-	if len(parts) == 1 {
-		return name
-	}
-
-	str := strings.Join(parts[:len(parts)-1], "")
-	ext := filepath.Ext(parts[len(parts)-1])
-	return str + ext
 }
