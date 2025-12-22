@@ -34,6 +34,7 @@ func main() {
 
 	mux.HandleFunc("POST /register", registerHandler)
 	mux.HandleFunc("POST /stream", streamHandler)
+	mux.HandleFunc("GET /download", downloadHandler)
 
 	mux.Handle("GET /web/", http.FileServer(http.FS(frontend)))
 	//	mux.HandleFunc("GET /files/{file}", fsvr.middleware(downloadHandler))

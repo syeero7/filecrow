@@ -1,25 +1,28 @@
 package main
 
 import (
+	"io"
+	"log"
 	"net/http"
-	"os"
-	"path"
-	"path/filepath"
-	"strings"
 )
 
-func downloadHandler(fsvr *fileServer, w http.ResponseWriter, r *http.Request) {
-	filename := r.PathValue("file")
-	if strings.ContainsRune(filename, filepath.Separator) {
-		w.WriteHeader(http.StatusBadRequest)
+func downloadHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	ft, exist := transfers.get(id)
+	if !exist {
+		http.Error(w, "transfer not found", http.StatusNotFound)
 		return
 	}
 
-	file := path.Join(fsvr.directory, filename)
-	if _, err := os.Stat(file); err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
+	w.Header().Set("Content-Disposition", "attachment; filename=p2p_file")
+	w.Header().Set("Content-Type", "application/octet-stream")
+	if _, err := io.Copy(w, ft.session.reader); err != nil {
+		log.Printf("transfer failed: %v", err)
 	}
 
-	http.ServeFile(w, r, file)
+	ft.session.reader.Close()
+	ft.session.done <- struct{}{}
+
+	transfers.remove(id)
+	w.WriteHeader(http.StatusOK)
 }
