@@ -19,5 +19,6 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	ft := &FileTransfer{name: name, size: size, session: s}
 	transfers.add(id, ft)
 
+	// TODO: broadcast file info availability
 	w.WriteHeader(http.StatusCreated)
 }

@@ -20,6 +20,8 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("transfer failed: %v", err)
 	}
 
+	// TODO: broadcast file transfer speed
+
 	ft.session.reader.Close()
 	ft.session.done <- struct{}{}
 
