@@ -8,9 +8,10 @@ import (
 )
 
 type RegisterFile struct {
+	Type string `json:"type"`
 	ID   string `json:"id"`
 	Name string `json:"name"`
-	Size string `json:"size"`
+	Size int    `json:"size"`
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +31,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if data.ID == "" || data.Name == "" || data.Size == "" {
+	if data.ID == "" || data.Name == "" || data.Size == 0 {
 		http.Error(w, "transfer id or name or size missing", http.StatusBadRequest)
 		return
 	}
