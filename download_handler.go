@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+type TransferState struct {
+	Type string `json:"type"`
+	ID   string `json:"id"`
+}
+
 func downloadHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	ft, exist := transfers.get(id)

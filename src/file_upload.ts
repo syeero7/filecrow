@@ -1,4 +1,4 @@
-import { registerFile } from "./api";
+import { registerFile, streamFile } from "./api";
 import { getHTMLElement } from "./utils";
 
 const uploadForm = getHTMLElement("[data-upload-form]");
@@ -9,9 +9,13 @@ uploadForm.addEventListener("submit", (e) => {
   const formData = new FormData(form);
   const files = formData.getAll("files") as File[];
 
-  files.forEach(async ({ name, size }) => {
+  files.forEach(async (file) => {
+    const { name, size } = file;
+    if (!name && !size) return;
     const id = crypto.randomUUID();
+
     await registerFile({ type: "register", id, name, size });
+    streamFile(id, file);
   });
 
   form.reset();

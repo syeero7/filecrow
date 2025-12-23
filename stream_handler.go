@@ -46,10 +46,19 @@ func streamHandler(w http.ResponseWriter, r *http.Request) {
 			msg, err := json.Marshal(p)
 			if err != nil {
 				log.Println(err)
+				return
 			}
 			fileServer.broadcast(msg)
 		},
 	}
+
+	ts := TransferState{ID: id, Type: "ready"}
+	msg, err := json.Marshal(ts)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	fileServer.broadcast(msg)
 
 	if _, err := io.Copy(pw, r.Body); err != nil {
 		log.Printf("transfer failed: %v", err)
