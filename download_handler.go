@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -20,8 +21,6 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: broadcast file transfer start
-
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", ft.name))
 	w.Header().Set("Content-Type", "application/octet-stream")
 	if _, err := io.Copy(w, ft.session.reader); err != nil {
@@ -31,7 +30,13 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 	ft.session.reader.Close()
 	ft.session.done <- struct{}{}
 
-	// TODO: broadcast file transfer end
+	ts := TransferState{ID: id, Type: "done"}
+	msg, err := json.Marshal(ts)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fileServer.broadcast(msg)
 
 	transfers.remove(id)
 	w.WriteHeader(http.StatusOK)

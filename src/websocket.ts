@@ -39,7 +39,7 @@ export type TransferProgressMsg = {
 };
 
 export type FileTranferStateMsg = {
-  type: "ready" | "completed";
+  type: "ready" | "done";
   id: string;
 };
 
