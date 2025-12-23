@@ -12,8 +12,8 @@ type Session struct {
 }
 
 type FileTransfer struct {
-	name    string `json:"name"`
-	size    string `json:"size"`
+	name    string
+	size    string
 	session *Session
 }
 

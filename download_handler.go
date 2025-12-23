@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -14,7 +15,7 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Disposition", "attachment; filename=p2p_file")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", ft.name))
 	w.Header().Set("Content-Type", "application/octet-stream")
 	if _, err := io.Copy(w, ft.session.reader); err != nil {
 		log.Printf("transfer failed: %v", err)
