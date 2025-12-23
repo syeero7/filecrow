@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -55,13 +56,14 @@ func streamHandler(w http.ResponseWriter, r *http.Request) {
 	ts := TransferState{ID: id, Type: "ready"}
 	msg, err := json.Marshal(ts)
 	if err != nil {
-		log.Println(err)
+		http.Error(w, fmt.Sprintf("failed to encode json.\nerror: %v", err), http.StatusInternalServerError)
 		return
 	}
 	fileServer.broadcast(msg)
 
 	if _, err := io.Copy(pw, r.Body); err != nil {
-		log.Printf("transfer failed: %v", err)
+		http.Error(w, fmt.Sprintf("transfer failed.\nerror: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	ft.session.writer.Close()

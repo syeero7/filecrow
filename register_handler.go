@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -19,15 +19,13 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "failed to read request body", http.StatusBadRequest)
-		log.Println(err)
+		http.Error(w, fmt.Sprintf("failed to read request body.\nerror: %v", err), http.StatusBadRequest)
 		return
 	}
 	defer r.Body.Close()
 
 	if err = json.Unmarshal(body, &data); err != nil {
-		http.Error(w, "failed to decode json", http.StatusBadRequest)
-		log.Println(err)
+		http.Error(w, fmt.Sprintf("failed to decode json.\nerror: %v", err), http.StatusBadRequest)
 		return
 	}
 

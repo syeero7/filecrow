@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -24,20 +23,21 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", ft.name))
 	w.Header().Set("Content-Type", "application/octet-stream")
 	if _, err := io.Copy(w, ft.session.reader); err != nil {
-		log.Printf("transfer failed: %v", err)
+		http.Error(w, fmt.Sprintf("transfer failed.\nerror: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	ft.session.reader.Close()
 	ft.session.done <- struct{}{}
+	transfers.remove(id)
 
 	ts := TransferState{ID: id, Type: "done"}
 	msg, err := json.Marshal(ts)
 	if err != nil {
-		fmt.Println(err)
+		http.Error(w, fmt.Sprintf("failed to encode json.\nerror: %v", err), http.StatusInternalServerError)
 		return
 	}
 	fileServer.broadcast(msg)
 
-	transfers.remove(id)
 	w.WriteHeader(http.StatusOK)
 }
