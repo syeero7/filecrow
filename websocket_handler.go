@@ -24,29 +24,32 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func wsHelper(w http.ResponseWriter, r *http.Request) error {
-	conn, client, isClosed := newClient()
+	nc := newClient()
 
-	fileServer.addClient(client)
-	defer fileServer.removeClient(client)
+	fileServer.addClient(nc.client)
+	defer fileServer.removeClient(nc.client)
 
-	c, err := websocket.Accept(w, r, nil)
+	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{OriginPatterns: []string{"localhost:5173"}})
 	if err != nil {
 		return err
 	}
 
-	if err := isClosed(c); err != nil {
+	if err := nc.isClosed(c); err != nil {
 		return err
 	}
-	defer conn.CloseNow()
 
-	ctx := conn.CloseRead(context.Background())
+	defer nc.conn.CloseNow()
+	ctx := nc.conn.CloseRead(context.Background())
+
 	for {
 		select {
 
-		case msg := <-client.msgs:
+		case msg := <-nc.client.msgs:
 			ctx2, cancel := context.WithTimeout(ctx, time.Second*5)
 			defer cancel()
-			return conn.Write(ctx2, websocket.MessageText, msg)
+			if err := nc.conn.Write(ctx2, websocket.MessageText, msg); err != nil {
+				return err
+			}
 
 		case <-ctx.Done():
 			return ctx.Err()

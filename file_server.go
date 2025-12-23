@@ -52,13 +52,23 @@ func (fs *FileServer) removeClient(c *Client) {
 	fs.mu.Unlock()
 }
 
-func newClient() (*websocket.Conn, *Client, func(*websocket.Conn) error) {
+type NewClient struct {
+	conn     *websocket.Conn
+	client   *Client
+	isClosed func(*websocket.Conn) error
+}
+
+func newClient() *NewClient {
 	const messageBuffer = 16
 	var mu sync.Mutex
 	var conn *websocket.Conn
 	closed := false
 
-	client := &Client{msgs: make(chan []byte, messageBuffer), closeSlow: func() {
+	nc := &NewClient{
+		conn: conn,
+	}
+
+	nc.client = &Client{msgs: make(chan []byte, messageBuffer), closeSlow: func() {
 		mu.Lock()
 		defer mu.Unlock()
 		closed = true
@@ -67,15 +77,15 @@ func newClient() (*websocket.Conn, *Client, func(*websocket.Conn) error) {
 		}
 	}}
 
-	isClosed := func(c *websocket.Conn) error {
+	nc.isClosed = func(c *websocket.Conn) error {
 		mu.Lock()
 		defer mu.Unlock()
 		if closed {
 			return net.ErrClosed
 		}
-		conn = c
+		nc.conn = c
 		return nil
 	}
 
-	return conn, client, isClosed
+	return nc
 }

@@ -28,11 +28,11 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/ws", websocketHandler)
 	mux.HandleFunc("POST /register", registerHandler)
 	mux.HandleFunc("POST /stream", streamHandler)
 	mux.HandleFunc("GET /download", downloadHandler)
-	mux.Handle("GET /", http.FileServer(http.FS(frontend)))
+	mux.HandleFunc("/ws", websocketHandler)
+	mux.Handle("/", http.FileServer(http.FS(frontend)))
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%d", *port),
