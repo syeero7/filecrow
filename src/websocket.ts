@@ -31,19 +31,22 @@ export type RegisterFileMsg = {
   size: number;
 };
 
-export type TransferProgressMsg = {
+type TransferProgressMsg = {
   type: "progress";
   id: string;
   current: number;
   total: number;
 };
 
-export type FileTranferStateMsg = {
+type FileTranferStateMsg = {
   type: "ready" | "done";
   id: string;
 };
 
-export type WebSocketMsg =
-  | RegisterFileMsg
-  | TransferProgressMsg
-  | FileTranferStateMsg;
+type WebSocketMsg = RegisterFileMsg | TransferProgressMsg | FileTranferStateMsg;
+
+export function isWebSocketMsg(
+  json: Record<string, unknown>,
+): json is WebSocketMsg {
+  return "id" in json && "type" in json;
+}

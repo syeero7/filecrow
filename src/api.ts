@@ -8,14 +8,21 @@ export function streamFile(fileId: string, body: File) {
   return fetcher(`/stream?id=${fileId}`, "POST", body, ["multipart"]);
 }
 
+export function getDownloadURL(fileId: string) {
+  return `${getBaseURL()}/download?id=${fileId}`;
+}
+
+function getBaseURL() {
+  return import.meta.env.DEV ? "/api" : `/`;
+}
+
 async function fetcher(
   path: string,
   method: "GET" | "POST",
   body?: Record<string, unknown> | File,
   headers?: ("json" | "multipart")[],
 ) {
-  const base = import.meta.env.DEV ? "/api" : `/`;
-  const url = `${base}${path}`;
+  const url = `${getBaseURL()}${path}`;
   const options: RequestInit = { method };
   const tmp: Record<string, string> = {};
 

@@ -1,7 +1,7 @@
 import { registerFile, streamFile } from "./api";
-import { getHTMLElement } from "./utils";
+import { getElement } from "./utils";
 
-const uploadForm = getHTMLElement("[data-upload-form]");
+const uploadForm = getElement("[data-upload-form]");
 
 uploadForm.addEventListener("submit", (e) => {
   e.preventDefault();
