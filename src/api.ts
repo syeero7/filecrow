@@ -13,7 +13,7 @@ export function getDownloadURL(fileId: string) {
 }
 
 function getBaseURL() {
-  return import.meta.env.DEV ? "/api" : `/`;
+  return import.meta.env.DEV ? "/api" : `http://${location.host}`;
 }
 
 async function fetcher(
