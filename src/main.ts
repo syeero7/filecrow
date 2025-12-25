@@ -20,7 +20,7 @@ type Transfer = {
 };
 
 const filesMap = new Map<string, Transfer>();
-export function getFilesMap(): Readonly<typeof filesMap> {
+export function getFilesMap(): ReadonlyMap<string, Transfer> {
   return filesMap;
 }
 
