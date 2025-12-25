@@ -6,14 +6,16 @@ import {
   calculateProgress,
   toReadableSize,
   type FileProgress,
+  type ReadableSize,
+  type ReadableSpeed,
 } from "./utils.ts";
 import { refreshScreen } from "./ui.ts";
 
 type Transfer = {
   name: string;
-  size: string;
-  status: "pending" | "ready" | "done" | string;
+  size: ReadableSize;
   progress: FileProgress;
+  status: "pending" | "ready" | "done" | ReadableSpeed;
 };
 
 const filesMap = new Map<string, Transfer>();

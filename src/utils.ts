@@ -9,7 +9,10 @@ export function getElement<T extends HTMLElement>(
   return el;
 }
 
-export function toReadableSize(size: number) {
+const SIZES = ["k", "M", "G", "T", "P", "E"] as const;
+export type ReadableSize = `${string} ${(typeof SIZES)[number] | ""}B`;
+
+export function toReadableSize(size: number): ReadableSize {
   const unit = 1000;
 
   if (size < unit) {
@@ -23,7 +26,7 @@ export function toReadableSize(size: number) {
     exponent++;
   }
 
-  return `${(size / division).toFixed(2)} ${"kMGTPE"[exponent]}B`;
+  return `${(size / division).toFixed(2)} ${SIZES[exponent]}B`;
 }
 
 export type FileProgress = {
@@ -32,6 +35,8 @@ export type FileProgress = {
   percentage: number;
   samples?: number[];
 };
+
+export type ReadableSpeed = `${ReadableSize}/s`;
 
 export function calculateProgress(
   progress: FileProgress,
@@ -46,7 +51,7 @@ export function calculateProgress(
   if (progress.time) samples.push(currentSpeed);
   if (samples.length > 5) samples.shift();
   const avgSpeed = samples.reduce((t, c) => t + c, 0) / samples.length || 0;
-  const speed = toReadableSize(avgSpeed) + "/s";
+  const speed: ReadableSpeed = `${toReadableSize(avgSpeed)}/s`;
 
   const newProgress: FileProgress = {
     samples,
