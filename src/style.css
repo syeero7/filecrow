@@ -1,0 +1,118 @@
+*,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --text: hsl(0 0% 98%);
+  --background: hsl(0 0% 3.9%);
+  --primary: hsla(0 0% 14.9%/0.4);
+  --secondary: hsl(160 60% 32%);
+  --accent: hsl(0 72.2% 50.6%);
+
+  --radius: 1.2em;
+  --glow-color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+  font-weight: 500;
+}
+
+button {
+  cursor: pointer;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+main {
+  max-width: 64rem;
+  margin-inline: auto;
+  padding: 0.5em;
+}
+
+h1 {
+  font-size: 2.5em;
+  text-align: center;
+  margin-block: 0.5em;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.upload {
+  padding: 0.25em;
+
+  form {
+    padding: 1.5em 0.5em;
+    background-color: var(--primary);
+    border-radius: var(--radius);
+    corner-shape: squircle;
+    display: grid;
+    gap: 1em;
+
+    div {
+      border: 2px solid hsla(from var(--text) h s l / 0.5);
+      box-shadow: 0 2px 2px hsla(from var(--text) h s l / 0.1);
+      margin: 0.6em 1em;
+      border-radius: var(--radius);
+      corner-shape: squircle;
+
+      input {
+        cursor: pointer;
+        width: 100%;
+        border-radius: var(--radius);
+        transition: background-color 0.25s ease-in-out;
+        background-color: hsla(from var(--primary) h s l / 0.8);
+
+        &::file-selector-button {
+          cursor: pointer;
+          border: none;
+          padding: 0.75em 0.9em;
+          border-right: 2px solid hsla(from var(--text) h s l / 0.5);
+          background-color: transparent;
+          margin-right: 1em;
+          font: inherit;
+          color: var(--text);
+        }
+
+        &:hover,
+        &:focus-visible {
+          background-color: hsla(from var(--background) h s l / 0.5);
+        }
+      }
+    }
+
+    button {
+      background-color: var(--secondary);
+      padding: 0.75em;
+      color: var(--text);
+      border-radius: var(--radius);
+      max-width: 200px;
+      width: 100%;
+      margin: auto;
+      border: 2px solid transparent;
+      transition-property: border-color, filter;
+      transition-duration: 0.25s, 0.1s;
+
+      --glow-color: hsl(from var(--secondary) h s 45%);
+
+      &:hover,
+      &:focus-visible {
+        border-color: var(--glow-color);
+        filter: drop-shadow(0 0 0.25em var(--glow-color));
+      }
+    }
+  }
+}
