@@ -5,6 +5,7 @@ import (
 	"embed"
 	"flag"
 	"fmt"
+	"io/fs"
 	"log"
 	"net"
 	"net/http"
@@ -26,13 +27,18 @@ func main() {
 		os.Exit(0)
 	}
 
+	distFS, err := fs.Sub(frontend, "dist")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("POST /register", registerHandler)
 	mux.HandleFunc("POST /stream", streamHandler)
 	mux.HandleFunc("GET /download", downloadHandler)
 	mux.HandleFunc("/ws", websocketHandler)
-	mux.Handle("/", http.FileServer(http.FS(frontend)))
+	mux.Handle("/", http.FileServer(http.FS(distFS)))
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%d", *port),
