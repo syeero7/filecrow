@@ -1,16 +1,21 @@
+const MAX_RECONNECT_ATTEMPTS = 5;
+let attempts = 1;
+
 export function connectWebsocket(onMessage: (msg: string) => void) {
   const ws = new WebSocket(`ws://${location.hostname}:8080/ws`);
 
   ws.addEventListener("open", () => {
+    attempts = 1;
     console.info("websocket connected");
   });
 
   ws.addEventListener("close", (e) => {
-    console.error(`websocket disconnected code: ${e.code} reason: ${e.reason}`);
+    console.error(`websocket disconnected code: ${e.code}`);
 
-    if (e.code !== 1001) {
-      console.info("reconnecting websocket in 1s");
-      setTimeout(() => connectWebsocket(onMessage), 1000);
+    if (e.code !== 1001 && attempts <= MAX_RECONNECT_ATTEMPTS) {
+      console.info(`reconnecting websocket in ${attempts}s`);
+      setTimeout(() => connectWebsocket(onMessage), 1000 * attempts);
+      attempts++;
     }
   });
 
