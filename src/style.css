@@ -149,6 +149,7 @@ section {
     white-space: nowrap;
     overflow-x: auto;
     scrollbar-width: thin;
+    scrollbar-color: hsla(from var(--text) h s l / 0.2) var(--primary);
   }
 
   --text-sm: 0.9em;
