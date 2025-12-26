@@ -1,6 +1,6 @@
 # File Crow
 
-A file server for sharing files over a local network.
+A peer-to-peer file server for sharing files over a local network.
 
 ![screenshot](./screenshot.webp)
 
@@ -10,18 +10,27 @@ I often transfer files between my PC and mobile device using a USB cable. But ev
 
 ## Quick Start
 
-[Go](https://go.dev/doc/install) version 1.24.7 or higher is required.
+\* [Go](https://go.dev/doc/install) v1.25.5 or higher and [Node](https://nodejs.org/en/download) v24.11.1 or higher are required.
 
-1. Install file crow
+1. Install filecrow
 
 ```bash
-go install github.com/syeero7/file-crow
+# clone the repo
+git clone https://github.com/syeero7/filecrow
+cd filecrow
+
+# install dependencies
+go mod tidy
+npm install
+
+# build the compiled binary
+npm run build
 ```
 
 2. Start the file server
 
 ```bash
-file-crow
+filecrow
 ```
 
 3. Access the web interface at `http://localhost:<PORT>` on the first device. The default port is 8080.
@@ -41,7 +50,7 @@ Available flags:
 
 ```bash
 # Start with a custom port
-file-crow --port 8000
+filecrow --port 8000
 ```
 
 ## Contributing
@@ -49,14 +58,14 @@ file-crow --port 8000
 ### Clone the repo
 
 ```bash
-git clone https://github.com/syeero7/file-crow
-cd file-crow
+git clone https://github.com/syeero7/filecrow
+cd filecrow
 ```
 
 ### Build the compiled binary
 
 ```bash
-go build
+npm run build
 ```
 
 ### Submit a pull request
