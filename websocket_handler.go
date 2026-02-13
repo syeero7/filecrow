@@ -29,7 +29,18 @@ func wsHelper(w http.ResponseWriter, r *http.Request) error {
 	fileServer.addClient(nc.client)
 	defer fileServer.removeClient(nc.client)
 
-	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{OriginPatterns: []string{"localhost:5173"}})
+	wsOptions := &websocket.AcceptOptions{
+		OriginPatterns: []string{
+			"http://localhost:*",
+			"http://127.0.0.1:*",
+			"http://192.168.*",
+			"http://172.1[6-9].*",
+			"http://172.2[0-9].*",
+			"http://172.3[0-1].*",
+			"http://10.*",
+		},
+	}
+	c, err := websocket.Accept(w, r, wsOptions)
 	if err != nil {
 		return err
 	}
