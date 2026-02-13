@@ -13,9 +13,7 @@ uploadForm.addEventListener("submit", (e) => {
   files.forEach(async (file) => {
     const { name, size } = file;
     if (!name && !size) return;
-    const id = crypto.randomUUID();
-
-    await registerFile({ type: "register", id, name, size });
+    const { id } = await registerFile({ type: "register",  name, size })
     pendingFiles.set(id, file);
   });
 

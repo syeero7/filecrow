@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -29,16 +30,32 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if data.ID == "" || data.Name == "" || data.Size == 0 {
-		http.Error(w, "transfer id or name or size missing", http.StatusBadRequest)
+	if data.Name == "" || data.Size == 0 {
+		http.Error(w, "transfer name or size missing", http.StatusBadRequest)
 		return
 	}
 
+	id, err := generateUUID()
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	data.ID = id
 	pr, pw := io.Pipe()
 	s := &Session{reader: pr, writer: pw, done: make(chan struct{})}
 	ft := &FileTransfer{name: data.Name, session: s}
 	transfers.add(data.ID, ft)
 
-	fileServer.broadcast(body)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]string{"id": data.ID})
+
+	msg, err := json.Marshal(data)
+	if err != nil {
+		log.Printf("failed to encode json: %v", err)
+		return
+	}
+
+	fileServer.broadcast(msg)
 }

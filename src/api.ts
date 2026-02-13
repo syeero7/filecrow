@@ -1,6 +1,6 @@
 import type { RegisterFileMsg } from "./websocket";
 
-export function registerFile(body: RegisterFileMsg) {
+export function registerFile(body: Omit<RegisterFileMsg,"id">): Promise<Pick<RegisterFileMsg,"id">> {
   return fetcher("/register", "POST", body, ["json"]);
 }
 
@@ -49,6 +49,10 @@ async function fetcher(
 
     const res = await fetch(url, options);
     if (!res.ok) throw res;
+    if (res.headers.get("content-type")?.startsWith("application/json")) {
+      return await res.json()
+    }
+
   } catch (err) {
     if (err instanceof Response) {
       console.error("failed to fetch: ", err.statusText);
